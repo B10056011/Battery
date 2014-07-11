@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Battery</title>
+<script>
+// 取得電池狀態(目前FIREFOX才能運作順利~)
+var battery = navigator.battery || navigator.webkitBattery || navigator.mozBattery;
+function getstate(){
+	var level=battery.level * 100;
+    if(level<10)
+     {
+     	showNotification();
+     	 alert("Battery charging: "+battery.charging+"\n Battery level:"+level+"\n Battery discharging time:"+battery.dischargingTime);
+     }
+    if(level>10)
+     {
+     	showNotification1();
+     	 alert("Battery charging: "+battery.charging+"\n Battery level:"+level+"\n Battery discharging time:"+battery.dischargingTime);
+     }
+}
+
+function authorizeNotification() {
+    Notification.requestPermission(function(perm) {
+    });
+}
+
+function showNotification() {
+    var notification = new Notification("電量小於10%", {
+        dir: "auto",
+        lang: "",
+        body: "你應該要充電囉！",
+        tag: "sometag",
+    });
+    
+    
+
+    // notification.onclose = …
+    // notification.onshow = …
+    // notification.onerror = …
+}
+
+function showNotification1() {
+    var notification = new Notification("電量大於10%", {
+        dir: "auto",
+        lang: "",
+        body: "現在電量充足！",
+        tag: "sometag",
+    });
+   }
+
+function addLoadEvent(getstate) {
+    var oldonload = window.onload;
+    if (typeof window.onload != 'function') {
+ window.onload = getstate;
+    } else {
+ window.onload = function() {
+            if (oldonload) {
+  oldonload();
+     }
+     getstate();
+ }
+    }
+}
+
+function addLoadEvent(authorizeNotification) {
+    var oldonload = window.onload;
+    if (typeof window.onload != 'function') {
+ window.onload = authorizeNotification;
+    } else {
+ window.onload = function() {
+            if (oldonload) {
+  oldonload();
+     }
+     authorizeNotification();
+ }
+    }
+}
+
+addLoadEvent(getstate);
+addLoadEvent(authorizeNotification);
+
+// 插電與否的改變~
+battery.addEventListener("chargingchange", function(e) {
+  alert("Battery charge change: "+battery.charging);
+}, false);
+</script>
+
+</head>
+
+<body>
+</body>
+</html>
